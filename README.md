@@ -1,6 +1,6 @@
-# Advent of Code 2024
-My C++ wannabe and Python solutions for the advent of code 2024. 
-Link of AoC 2024 puzzles here: [Advent of Code 2024](https://adventofcode.com/2024/)
+# Advent of Code 2025
+My C++ wannabe and Python solutions for the advent of code 2025. 
+Link of AoC 2025 puzzles here: [Advent of Code 2024](https://adventofcode.com/2025/)
 
 ## How to use this repository? 
 This repository is mainly personal as I am learning while solving the daily puzzles from AoC 2024. You can use the solutions in this repository for comparison. 
