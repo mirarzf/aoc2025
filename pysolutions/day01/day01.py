@@ -5,27 +5,24 @@ def solve(inputfile, puzzlepart):
     lines = f.readlines()
     f.close()
 
-    first_list = []
-    second_list = []
-
+    dialnb = 50
+    compteur1 = 0 
+    compteur2 = 0
     for line in lines: 
-        first = int(line.split()[0])
-        second = int(line.split()[-1])
-        if first != None and second != None:  
-            first_list.append(first)
-            second_list.append(second)
-
-    first_list.sort()
-    second_list.sort()
-    first_list = np.array(first_list)
-    second_list = np.array(second_list)
+        dir = 1 if line[0] == 'R' else -1 
+        if puzzlepart == 2: 
+            print(line[:-1])
+            compteur2 += int(line[1:]) // 100 
+            if dialnb != 0 and (dialnb + dir*int(line[1:]) > 100 or dialnb + dir*int(line[1:]) < 0): 
+                compteur2 += 1 
+            print("ahoy", dialnb + dir*int(line[1:]), int(line[1:]) // 100 + 1)
+        dialnb = (dialnb + dir * int(line[1:])) % 100
+        if puzzlepart == 1: 
+            if dialnb == 0: 
+                compteur1 += 1 
+        print(dialnb, compteur2)
 
     if puzzlepart == 1: 
-        return np.sum(np.abs(first_list-second_list))
+        return compteur1
     else: 
-        retval = 0 
-        for i in first_list: 
-            for j in second_list: 
-                if i == j: 
-                    retval += i 
-        return retval
+        return compteur2+compteur1
