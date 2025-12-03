@@ -9,9 +9,12 @@ def getHighestDigit(line):
 def getMaximumVoltage(line, n_batteries): 
     voltage_digits = []
     left_idx = 0 
-    last_voltages = line[-n_batteries:]
     for i in range(n_batteries): 
-        line_to_check = line[left_idx:-n_batteries]+last_voltages[:i+1]
+        if i-n_batteries+1 == 0: 
+            line_to_check = line[left_idx:]
+        else: 
+            line_to_check = line[left_idx:-n_batteries+i+1]
+        print(line_to_check, -n_batteries+i+1)
         idx, digit = getHighestDigit(line_to_check)
         voltage_digits.append(digit) 
         left_idx += idx+1
@@ -30,6 +33,7 @@ def solve(inputfile, puzzlepart):
         n_batteries = 12 
     for line in lines: 
         retval += getMaximumVoltage(line[:-1], n_batteries)
+        print(getMaximumVoltage(line[:-1], n_batteries))
 
     return retval 
 # Part 1: 17432
