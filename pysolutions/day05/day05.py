@@ -26,13 +26,11 @@ def solve(inputfile, puzzlepart):
         ids_to_check.append(int(lines[i]))
         i += 1 
 
-    print(fresh_ranges, ids_to_check)
-
     counter = 0 
     for id in ids_to_check: 
         if isFresh(fresh_ranges, id): 
             counter += 1 
 
     return counter 
-# Part 1: 
+# Part 1: 615
 # Part 2: 
