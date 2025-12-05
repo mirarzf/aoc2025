@@ -1,5 +1,8 @@
 import numpy as np 
 
+def hasNoOverlap(range1, range2):
+    return range2[1] < range1[0] or range2[0] > range1[1]     
+
 def isInRanges(fresh_ranges, id): 
     for rangeids in fresh_ranges: 
         if id >= rangeids[0] and id <= rangeids[1]: 
@@ -34,21 +37,23 @@ def solve(inputfile, puzzlepart):
 
         return counter 
 
-    # new_fresh_ranges = []
-    # for fresh_range in fresh_ranges: 
-    #     new_range = []
-    #     first_id, sec_id = fresh_range[0], fresh_range[1]
-    #     isInRangeFID = isInRanges(new_fresh_ranges, first_id)
-    #     isInRangeSID = isInRanges(new_fresh_ranges, sec_id)
-    #     if isInRangeFID[0] and not isInRangeSID[0]: 
-    #         new_range = [first_id, isInRangeSID[1][0]-1] 
-    #     if not isInRangeFID[0] and isInRangeSID[0]: 
-    #         new_range = [isInRangeSID[1][1]+1, sec_id] 
-    #     if not isInRangeFID[0] and not isInRangeSID[0]: 
-    #         new_range = [first_id, sec_id] 
-    #     if len(new_range) != 0: 
-    #         new_fresh_ranges.append(new_range)
-        
+    # Sort fresh_ranges per minimum 
+    fresh_ranges_sort = np.sort(np.array(fresh_ranges), axis=0)
+
+    left = fresh_ranges_sort[0][0]
+    right = fresh_ranges_sort[0][1]
+    new_fresh_ranges = []
+    for i in range(len(fresh_ranges_sort)): 
+        rangei = fresh_ranges_sort[i]
+        if rangei[0] <= right: 
+            if rangei[1] > right: 
+                right = rangei[1]
+        else: # rangei[0] > right
+            new_fresh_ranges.append([left, right])
+            left = rangei[0]
+            right = rangei[1]
+    new_fresh_ranges.append([left, right])
+
     # Start counting all the ids 
     somme = 0 
     for range_ids in new_fresh_ranges: 
@@ -58,4 +63,4 @@ def solve(inputfile, puzzlepart):
 
             
 # Part 1: 615
-# Part 2: 
+# Part 2: 353716783056994 
