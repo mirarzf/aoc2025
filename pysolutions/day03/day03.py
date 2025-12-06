@@ -1,5 +1,3 @@
-import numpy as np 
-
 def getHighestDigit(line): 
     for highest_digit in range(9,0,-1): 
         for i in range(len(line)): 

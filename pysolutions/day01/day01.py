@@ -1,5 +1,3 @@
-import numpy as np 
-
 def solve(inputfile, puzzlepart): 
     f = open(inputfile, 'r')
     lines = f.readlines()

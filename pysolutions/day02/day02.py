@@ -1,5 +1,3 @@
-import numpy as np 
-
 def getMirror(nb:int): 
     dec_length = len(str(nb))
     return nb * (1 + 10**dec_length)
