@@ -60,7 +60,6 @@ def solve(inputfile, puzzlepart):
         somme += range_ids[1]-range_ids[0]+1
     
     return somme 
-
             
 # Part 1: 615
 # Part 2: 353716783056994 
