@@ -17,7 +17,25 @@ def getSplittingNb(grid, entryCoords):
             nextCoords.append(j)
     nextCoords = list(set(nextCoords))
 
-    return nb_splits + getSplittingNb(grid[1:,:], nextCoords)        
+    return nb_splits + getSplittingNb(grid[1:,:], nextCoords)  
+
+def getNbTimelines(grid, dist): 
+    if grid.shape[0] == 1: 
+        return np.sum(dist)
+    
+    next_dist = np.zeros(grid.shape[1], dtype=int)
+    for j in range(grid.shape[1]): 
+        if dist[j] > 0: 
+            if grid[0,j] == 1: 
+                if j-1 >= 0: 
+                    next_dist[j-1] += dist[j]
+                if j+1 < grid.shape[1]: 
+                    next_dist[j+1] += dist[j]
+            else: 
+                next_dist[j] += dist[j]
+    
+    return getNbTimelines(grid[1:], next_dist)
+
 
 def solve(inputfile, puzzlepart): 
     f = open(inputfile, 'r')
@@ -34,9 +52,12 @@ def solve(inputfile, puzzlepart):
             elif lines[i][j] == '^': 
                 grid[i][j] = 1 
     
-    retval = getSplittingNb(grid, [Sidx[1]])
-    
-    return retval
+    if puzzlepart == 1: 
+        return getSplittingNb(grid, [Sidx[1]])
+    else: 
+        dist = np.zeros(grid.shape[1], dtype=int)
+        dist[Sidx[1]] = 1
+        return getNbTimelines(grid, dist)
 
-# Part 1: 
+# Part 1: 1649 
 # Part 2: 
