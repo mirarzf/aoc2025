@@ -1,29 +1,15 @@
 import numpy as np 
 
 def eudist(v1, v2): 
-    return np.sum([(v1[i]-v2[i])**2 for i in range(3) ])
+    return np.sum([(v2[i]-v1[i])**2 for i in range(3)])
 
-def fusionner(gauche, droite): 
-    if len(gauche) == 0: 
-        return droite 
-    if len(droite) == 0: 
-        return gauche 
-    if gauche[0][0] <= droite[0][0]: 
-        return [gauche[0]] + fusionner(gauche[1:], droite)
-    else: 
-        return [droite[0]] + fusionner(gauche, droite[1:])
-
-
-def trifusion(liste): 
-    if len(liste) == 1: 
-        return liste 
-    
-    milieu = len(liste)//2 
-    gauche = trifusion(liste[:milieu])
-    droite = trifusion(liste[milieu:])
-    
-    return fusionner(gauche, droite)
-    
+def appendSorted(liste, newelement, lenlistemax = 1000): 
+    if len(liste) == 0 or newelement[0] <= liste[0][0]: 
+        return [newelement] + liste[:lenlistemax-1]
+    for i in range(len(liste)-1): 
+        if liste[i][0] <= newelement[0] and liste[i+1][0] >= newelement[0]: 
+            return liste[:i+1] + [newelement] + liste[i+1:lenlistemax-1]
+    return liste 
 
 def solve(inputfile, puzzlepart): 
     f = open(inputfile, 'r')
@@ -33,25 +19,62 @@ def solve(inputfile, puzzlepart):
     vertices = []
     for line in lines: 
         if line != "": 
-            vertices.append([int(e) for e in line.split(',')])
+            vertices.append([float(e) for e in line.split(',')])
     vertices = np.array(vertices)
 
-    v_dists = [ [] for i in range(len(lines)) ]
     all_dists = []
-    
+    n_connexions = 1000
     index = 0
     for i in range(vertices.shape[0]): 
         for j in range(i+1, vertices.shape[0]): 
             dist = eudist(vertices[i], vertices[j])
-            all_dists.append((dist, index))
-            v_dists[i].append(index)
-            v_dists[j].append(index)
+            all_dists = appendSorted(all_dists, (dist, i, j), lenlistemax=n_connexions)
             index += 1 
-
-    all_dists_sorted = trifusion(all_dists)
     
+    # print(all_dists)
+    # print(len(all_dists))
 
-    return 0 
+    components = {}
+    circuits_lengths = {}
+    for e in all_dists: 
+        i, j = e[1], e[2]
+        if i in components.keys() and j not in components.keys(): 
+            components[j] = components[i]
+            circuits_lengths[components[i]] += 1 
+        
+        elif j in components.keys(): 
+            if i not in components.keys(): 
+                components[i] = i 
+                circuits_lengths[i] = 1
 
-# Part 1:  
+            if components[i] != components[j]: 
+                new_circuit_r = min(components[i], components[j])
+                ex_circuit_r = max(components[i], components[j])
+
+                for vertex in components.keys(): 
+                    if components[vertex] == ex_circuit_r: 
+                        components[vertex] = new_circuit_r 
+
+                circuits_lengths[new_circuit_r] += circuits_lengths[ex_circuit_r]
+                circuits_lengths[ex_circuit_r] = 0 
+            
+        else: # i not in components.keys() and j not in components.keys()
+            components[i] = i
+            components[j] = i
+            circuits_lengths[i] = 2
+    
+    retval = 1 
+    circuits_lengths_liste = [circuits_lengths[key] for key in circuits_lengths.keys()]
+    circuits_lengths_liste.sort(reverse=True)
+    for e in circuits_lengths_liste[:3]: 
+        retval *= e
+    # print(components)
+    # print(circuits_lengths)
+    # print(len(circuits_lengths))
+    # print(circuits_lengths_liste)
+    print(circuits_lengths_liste[:3])
+    
+    return retval
+
+# Part 1: 330786
 # Part 2: 
